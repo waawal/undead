@@ -9,6 +9,8 @@ Dead Easy UNIX Daemons!
 
 """
 
+import logbook
+
 class Geist(object):
     """ This is the Poltergeist module """
 
@@ -16,19 +18,15 @@ class Geist(object):
     name = None
     pid = None
     log_level = "WARNING"
-    file_descriptors = []
+    log_handler = None
 
-    
+
     def __call__(self, action, *args, **kwargs):
-        return self.daemonize(action, *args, **kwargs)
+        """ Alias for start """
+        self.start = self.start(action)
 
-    def daemonize(self, action, *args, **kwargs):
-        self.daemon = self.start(action, self.pid, self.file_descriptors,
-                             self.name, self.log_level
-                             )
-        self.daemon.start()
-
-    def start(self, action, pid, file_descriptors, name, log_level):
+    def start(self, action):
+        """ Does the daemon dance """
         import fcntl
         import os
         import sys
@@ -37,67 +35,81 @@ class Geist(object):
         import atexit
         import inspect
 
-        from logbook import SyslogHandler
+        from logbook import Logger, FileHandler
         
         self.action = action
-        self.name = name or action.__name__
-        self.pid = pid
+        self.name = self.name or action.__name__
+
+        home = os.path.join(os.path.expanduser("~"),
+                                ".{0}".format(self.name)
+                                )
         if self.pid is None:
-            self.pid = '/tmp/{0}.pid'.format(self.name)
-        self.file_descriptors = file_descriptors
+            if not os.path.exists(home):
+                os.makedirs(home)
+            self.pid = os.path.join(home, "{0}.pid".format(self.name))
         # Initialize logging.
-        self.logger = SyslogHandler(self.name, level=log_level)
+        self.log = Logger(self.name)
 
-        process_id = os.fork()
-        if process_id < 0:
-            sys.exit(1)
-        elif process_id is not 0:
-            sys.exit(0)
-        process_id = os.setsid()
-        if process_id is -1:
-            sys.exit(1)
-        devnull = "/dev/null"
-        if hasattr(os, "devnull"):
-            devnull = os.devnull
+        if self.log_handler is None:
+            if not os.path.exists(home):
+                    os.makedirs(home)
+        self.log_handler = FileHandler(
+            os.path.join(home, "{0}.log".format(self.name)),
+            level=self.log_level
+            )
+        with self.log_handler.applicationbound():
+            process_id = os.fork()
+            if process_id < 0:
+                sys.exit(1)
+            elif process_id is not 0:
+                sys.exit(0)
+            process_id = os.setsid()
+            if process_id is -1:
+                sys.exit(1)
+            devnull = "/dev/null"
+            if hasattr(os, "devnull"):
+                devnull = os.devnull
 
-        for fd in range(resource.getrlimit(resource.RLIMIT_NOFILE)[0]):
-            if fd not in self.file_descriptors:
-                try:
-                    os.close(fd)
-                except OSError:
-                    pass
+            os.open(devnull, os.O_RDWR)
+            os.dup(0)
+            os.dup(0)
 
-        os.open(devnull, os.O_RDWR)
-        os.dup(0)
-        os.dup(0)
+            os.umask(0o27)
+            os.chdir("/")
 
-        os.umask(0o27)
-        os.chdir("/")
+            try:
+                lockfile = open(self.pid, "w")
+                fcntl.lockf(lockfile, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except IOError:
+                sys.stderr.write("Error: {0} is locked.".format(self.pid))
+                sys.exit(1)
+            lockfile.write("{0}".format(os.getpid()))
+            lockfile.flush()
+            # Set custom action on SIGTERM.
+            signal.signal(signal.SIGTERM, self._sigterm)
+            atexit.register(self._sigterm)
 
-        lockfile = open(self.pid, "w")
-        fcntl.lockf(lockfile, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            self.log.warning("Starting daemon.")
 
-        lockfile.write("{0}".format(os.getpid()))
-        lockfile.flush()
+            args = inspect.getargspec(self.action)[0]
+            if 'log' not in args:
+                return self.action()
+            self.action(log=self.log)
 
-        # Set custom action on SIGTERM.
-        signal.signal(signal.SIGTERM, self.sigterm)
-        atexit.register(self.sigterm)
-
-        self.logger.warn("Starting daemon.")
-
-        args = inspect.getargspec(self.action)[0]
-        if 'logger' not in args:
-            return self.action()
-        self.action(logger=self.logger)
-
-    def sigterm(self, signum=None, frame=None):
-        if signum is None:
-            self.logger.warn("Stopping daemon.")
-        else:
-            self.logger.warn("Signal: {0} - Stopping daemon.".format(signum))
-        os.remove(self.pid)
-        sys.exit(0)
+    def _sigterm(self, signum=None, frame=None):
+        import os
+        import sys
+        with self.log_handler.applicationbound():
+            if not signum:
+                self.log.warning("Stopping daemon.")
+            else:
+                self.log.warning("Signal: {0} -Stopping daemon.".format(signum))
+            try:
+                os.remove(self.pid)
+            except OSError:
+                pass
+            finally:
+                sys.exit(0)
 
 geist = Geist()
 import sys

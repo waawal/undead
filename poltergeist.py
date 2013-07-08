@@ -55,6 +55,8 @@ class Geist(object):
 
 
 sys.modules[__name__] = Geist()
+geist sys.modules[__name__] # from poltergeist import geist
+
 # Removing from module ns
 del sys
 del Daemonize

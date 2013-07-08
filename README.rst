@@ -34,7 +34,7 @@ poltergeist.name
 poltergeist.pid
   Path to logfile.  
 
-  Default: ~/. ``poltergeist.name`` / ``poltergeist.name`` .pid
+  Default: ``~/.poltergeist.name/poltergeist.name.pid``
 
 poltergeist.log_level
   Log level.  
@@ -44,8 +44,10 @@ poltergeist.log_level
 poltergeist.log_handler
   The logbook handler.
 
-  Default: ``FileHandler`` ~/. ``poltergeist.name`` / ``poltergeist.name`` .log
+  Default: ``FileHandler`` ``~/.poltergeist.name/poltergeist.name.pid``
 
+Example
+*******
 
 .. code:: python
 
@@ -60,6 +62,22 @@ poltergeist.log_handler
     def my_daemon_process():
         """ This function will be daemonized. """
         # ...
+
+Logging in the decorated handler
+--------------------------------
+
+Just add ``log`` to your decorated callable's argument, and the logger will be passed down. Log away captain!
+
+.. code:: python
+
+    import poltergeist
+
+    @poltergeist
+    def some_things_have_to_be_believed_to_be_seen(log):
+        log.warning('I\'m logging')
+        log.info('on multiple levels!')
+
+As we haven't specied a ``poltergeist.log_handler`` the logfile will be created in ~/.some_things_have_to_be_believed_to_be_seen
 
 Dependencies
 ------------

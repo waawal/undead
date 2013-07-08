@@ -60,8 +60,8 @@ Example
         """ This function will be daemonized. """
         # ...
 
-Logging in the decorated handler
---------------------------------
+Logging within the decorated handler
+------------------------------------
 
 Just add ``log`` to your decorateds signature, and the logger will be passed down. Log away captain!
 
@@ -71,10 +71,10 @@ Just add ``log`` to your decorateds signature, and the logger will be passed dow
 
     @undead
     def i_am_undead(log):
-        log.warning("I'm logging")
-        log.info("on multiple levels!")
+        log.warning("I'm warning you!")
+        log.info("Soap, 2 for $1.99")
 
-As we haven't specified a ``undead.log_handler`` the logfile will be created in ``~/.i_am_undead``
+Since we didn't specify a ``undead.log_handler`` the logfile will be created by default in ``~/.i_am_undead``
 
 Installation
 ------------

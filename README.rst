@@ -44,7 +44,7 @@ poltergeist.log_level
 poltergeist.log_handler
   The logbook handler.
 
-  Default: ``FileHandler`` ``~/.poltergeist.name/poltergeist.name.pid``
+  Default: ``~/.poltergeist.name/poltergeist.name.log``
 
 Example
 *******
@@ -52,11 +52,12 @@ Example
 .. code:: python
 
     import poltergeist
+    from logbook import SyslogHandler
 
     poltergeist.name = "Tangina Barrons"
     poltergeist.pid = "~/tangina.pid"
     poltergeist.log_level = "ERROR"
-    poltergeist.log_handler = poltergeist.logbook.SyslogHandler('My Daemon', level='ERROR')
+    poltergeist.log_handler = SyslogHandler('My Daemon', level='ERROR')
 
     @poltergeist
     def my_daemon_process():
@@ -77,7 +78,7 @@ Just add ``log`` to your decorated callable's argument, and the logger will be p
         log.warning('I\'m logging')
         log.info('on multiple levels!')
 
-As we haven't specied a ``poltergeist.log_handler`` the logfile will be created in ~/.some_things_have_to_be_believed_to_be_seen
+As we haven't specied a ``poltergeist.log_handler`` the logfile will be created in ``~/.some_things_have_to_be_believed_to_be_seen``
 
 Dependencies
 ------------

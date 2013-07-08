@@ -29,7 +29,7 @@ undead.name
 undead.pid
   Path to logfile.  
 
-  Default: ``~/.undead.name/undead.name.pid``
+  Default: ``~/.{undead.name}/{undead.name}.pid``
 
 undead.log_level
   Log level.  
@@ -39,7 +39,7 @@ undead.log_level
 undead.log_handler
   The logbook handler.
 
-  Default: ``~/.undead.name/undead.name.log``
+  Default: ``~/.{undead.name}/{undead.name}.log``
 
 Example
 *******

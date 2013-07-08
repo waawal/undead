@@ -19,7 +19,7 @@ setup(
     long_description=long_description,
     py_modules=['undead'],
     zip_safe=True,
-    install_requires=['logbook',],
+    install_requires=['logbook','lockfile',],
     classifiers=[
         # As from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         #'Development Status :: 1 - Planning',

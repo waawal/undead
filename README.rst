@@ -86,6 +86,8 @@ Dependencies
 
 ``logbook``
 
+``lockfile``
+
 License
 -------
 

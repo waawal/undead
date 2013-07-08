@@ -31,6 +31,7 @@ class Undead(object):
         import resource
         import atexit
         import inspect
+        from resource import getrlimit, RLIMIT_NOFILE
 
         from lockfile import FileLock
         from logbook import Logger, FileHandler
@@ -45,17 +46,7 @@ class Undead(object):
             if not os.path.exists(home):
                 os.makedirs(home)
             self.pid = os.path.join(home, "{0}.pid".format(self.name))
-        # Initialize logging.
-        self.log = Logger(self.name)
-
-        if self.log_handler is None:
-            if not os.path.exists(home):
-                    os.makedirs(home)
-        self.log_handler = FileHandler(
-            os.path.join(home, "{0}.log".format(self.name)),
-            level=self.log_level
-            )
-        with self.log_handler.applicationbound():
+        
             process_id = os.fork()
             if process_id < 0:
                 sys.exit(1)
@@ -67,6 +58,12 @@ class Undead(object):
             devnull = "/dev/null"
             if hasattr(os, "devnull"):
                 devnull = os.devnull
+
+            for fd in range(getrlimit(RLIMIT_NOFILE)[0]):
+                try:
+                    os.close(fd)
+                except OSError:
+                    pass
 
             os.open(devnull, os.O_RDWR)
             os.dup(0)
@@ -83,17 +80,28 @@ class Undead(object):
                 lockfile.write("{0}".format(os.getpid()))
             self.lock.acquire()
             
+            # Initialize logging.
+            self.log = Logger(self.name)
 
-            # Set custom action on SIGTERM.
-            signal.signal(signal.SIGTERM, self._sigterm)
-            atexit.register(self._sigterm)
+            if self.log_handler is None:
+                if not os.path.exists(home):
+                        os.makedirs(home)
+            self.log_handler = FileHandler(
+                os.path.join(home, "{0}.log".format(self.name)),
+                level=self.log_level
+                )
+            with self.log_handler.applicationbound():
+            
+                # Set custom action on SIGTERM.
+                signal.signal(signal.SIGTERM, self._sigterm)
+                atexit.register(self._sigterm)
 
-            self.log.warning("Starting daemon.")
+                self.log.warning("Starting daemon.")
 
-            args = inspect.getargspec(self.action)[0]
-            if 'log' not in args:
-                return self.action()
-            self.action(log=self.log)
+                args = inspect.getargspec(self.action)[0]
+                if 'log' not in args:
+                    return self.action()
+                self.action(log=self.log)
 
     def _sigterm(self, signum=None, frame=None):
         import os

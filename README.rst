@@ -55,9 +55,9 @@ Example
     from logbook import SyslogHandler
 
     poltergeist.name = "Tangina Barrons"
-    poltergeist.pid = "~/tangina.pid"
+    poltergeist.pid = "/var/log/tangina.pid"
     poltergeist.log_level = "ERROR"
-    poltergeist.log_handler = SyslogHandler('My Daemon', level='ERROR')
+    poltergeist.log_handler = SyslogHandler("My Daemon", level="ERROR")
 
     @poltergeist
     def my_daemon_process():

@@ -61,7 +61,7 @@ Example
 Logging in the decorated handler
 --------------------------------
 
-Just add ``log`` to your decorateds arguments, and the logger will be passed down. Log away captain!
+Just add ``log`` to your decorateds signature, and the logger will be passed down. Log away captain!
 
 .. code:: python
 

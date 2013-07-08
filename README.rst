@@ -17,12 +17,6 @@ Dead Easy UNIX Daemons!
         while True:
             sleep(10)
 
-Installation
-------------
-::
-
-    pip install poltergeist
-
 Settings
 --------
 
@@ -67,7 +61,7 @@ Example
 Logging in the decorated handler
 --------------------------------
 
-Just add ``log`` to your decorated callable's argument, and the logger will be passed down. Log away captain!
+Just add ``log`` to your decorateds arguments, and the logger will be passed down. Log away captain!
 
 .. code:: python
 
@@ -78,7 +72,13 @@ Just add ``log`` to your decorated callable's argument, and the logger will be p
         log.warning('I\'m logging')
         log.info('on multiple levels!')
 
-As we haven't specied a ``poltergeist.log_handler`` the logfile will be created in ``~/.some_things_have_to_be_believed_to_be_seen``
+As we haven't specified a ``poltergeist.log_handler`` the logfile will be created in ``~/.some_things_have_to_be_believed_to_be_seen``
+
+Installation
+------------
+::
+
+    pip install poltergeist
 
 Dependencies
 ------------

@@ -1,7 +1,7 @@
 undead
 ===========
 
-.. image:: http://www.pajiba.com/assets_c/2013/05/tumblr_m7nqnc5zVp1rokxsko1_500-thumb-500x206-69830.gif
+.. image:: http://dribbble.s3.amazonaws.com/users/158965/screenshots/826605/mr_z.gif
    :alt: This house is clean.
 
 Dead Easy ``*NIX`` Daemons, in ``Python``!

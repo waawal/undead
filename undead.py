@@ -25,7 +25,6 @@ class Undead(object):
 
     def start(self, action):
         """ Does the daemon dance """
-        import fcntl
         import os
         import sys
         import signal
@@ -33,6 +32,7 @@ class Undead(object):
         import atexit
         import inspect
 
+        from lockfile import FileLock
         from logbook import Logger, FileHandler
         
         self.action = action
@@ -75,14 +75,15 @@ class Undead(object):
             os.umask(0o27)
             os.chdir("/")
 
-            try:
-                lockfile = open(self.pid, "w")
-                fcntl.lockf(lockfile, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except IOError:
-                sys.stderr.write("Error: {0} is locked.".format(self.pid))
-                sys.exit(1)
-            lockfile.write("{0}".format(os.getpid()))
-            lockfile.flush()
+            self.lock = FileLock(self.pid)
+            if self.lock.is_locked():
+                sys.stderr.write("Error: {0} is locked.\n".format(self.pid))
+                sys.exit(0)
+            with open(self.pid, "w") as lockfile:
+                lockfile.write("{0}".format(os.getpid()))
+            self.lock.acquire()
+            
+
             # Set custom action on SIGTERM.
             signal.signal(signal.SIGTERM, self._sigterm)
             atexit.register(self._sigterm)
@@ -103,6 +104,7 @@ class Undead(object):
             else:
                 self.log.warning("Signal: {0} -Stopping daemon.".format(signum))
             try:
+                self.lock.release()
                 os.remove(self.pid)
             except OSError:
                 pass

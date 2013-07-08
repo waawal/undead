@@ -9,8 +9,6 @@ Dead Easy UNIX Daemons!
 
 """
 
-import logbook
-
 class Geist(object):
     """ This is the Poltergeist module """
 

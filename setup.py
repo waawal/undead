@@ -19,7 +19,7 @@ setup(
     long_description=long_description,
     py_modules=['poltergeist'],
     zip_safe=True,
-    install_requires=['logbook','daemonize',],
+    install_requires=['logbook',],
     classifiers=[
         # As from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         #'Development Status :: 1 - Planning',

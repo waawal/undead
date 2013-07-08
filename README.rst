@@ -63,7 +63,7 @@ poltergeist.file_descriptors
 Dependencies
 ------------
 
-``logbook`` and ``daemonize``
+``logbook``
 
 License
 -------

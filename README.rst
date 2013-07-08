@@ -69,8 +69,8 @@ Just add ``log`` to your decorateds arguments, and the logger will be passed dow
 
     @poltergeist
     def some_things_have_to_be_believed_to_be_seen(log):
-        log.warning('I\'m logging')
-        log.info('on multiple levels!')
+        log.warning("I'm logging")
+        log.info("on multiple levels!")
 
 As we haven't specified a ``poltergeist.log_handler`` the logfile will be created in ``~/.some_things_have_to_be_believed_to_be_seen``
 

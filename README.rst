@@ -34,7 +34,7 @@ poltergeist.name
 poltergeist.pid
   Path to logfile.  
 
-  Default: ~/.``poltergeist.name``/``poltergeist.name``.pid
+  Default: ~/. ``poltergeist.name`` / ``poltergeist.name`` .pid
 
 poltergeist.log_level
   Log level.  
@@ -44,7 +44,7 @@ poltergeist.log_level
 poltergeist.log_handler
   The logbook handler.
 
-  Default: ``FileHandler`` ~/.``poltergeist.name``/``poltergeist.name``.log
+  Default: ``FileHandler`` ~/. ``poltergeist.name`` / ``poltergeist.name`` .log
 
 
 .. code:: python

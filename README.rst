@@ -7,6 +7,7 @@ Dead Easy POSIX Daemons for Python!
 
 .. code:: python
 
+    #!/usr/bin/python
     import undead
 
     @undead

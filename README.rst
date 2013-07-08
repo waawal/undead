@@ -1,15 +1,6 @@
 undead
 ===========
 
-.. image:: http://i682.photobucket.com/albums/vv182/nmrihmod/EmergencyBroadcastBars.gif
-   :alt: This house is clean.
-
-------------
-
-Dead Easy ``*NIX`` Daemons, in ``Python``!
-
-------------
-
 .. code:: python
 
     import undead
@@ -20,6 +11,15 @@ Dead Easy ``*NIX`` Daemons, in ``Python``!
         from time import sleep
         while True:
             sleep(10)
+
+.. image:: http://24.media.tumblr.com/tumblr_mcpayzTmW31rezildo1_1280.gif
+   :alt: This house is clean.
+
+------------
+
+Dead Easy ``*NIX`` Daemons, in ``Python``!
+
+------------
 
 Settings
 --------

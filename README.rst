@@ -39,7 +39,7 @@ poltergeist.pid
 poltergeist.log_level
   Log level.  
 
-  Default: "WARNING"
+  Default: ``"WARNING"``
 
 poltergeist.log_handler
   The logbook handler.

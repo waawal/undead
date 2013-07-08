@@ -1,5 +1,7 @@
 undead
-===========
+======
+
+Dead Easy ``*NIX`` Daemons, in ``Python``!
 
 .. code:: python
 
@@ -12,14 +14,12 @@ undead
         while True:
             sleep(10)
 
+-------------------------------------------------------------------------
+
 .. image:: http://24.media.tumblr.com/tumblr_mcpayzTmW31rezildo1_1280.gif
    :alt: This house is clean.
 
-------------
-
-Dead Easy ``*NIX`` Daemons, in ``Python``!
-
-------------
+-------------------------------------------------------------------------
 
 Settings
 --------

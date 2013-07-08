@@ -1,7 +1,7 @@
 undead
 ======
 
-Dead Easy ``*NIX`` Daemons, in ``Python``!
+Dead Easy POSIX Daemons, in Python!
 
 -------------------------------------------------------------------------
 
@@ -69,11 +69,11 @@ Just add ``log`` to your decorateds signature, and the logger will be passed dow
     import undead
 
     @undead
-    def some_things_have_to_be_believed_to_be_seen(log):
+    def i_am_undead(log):
         log.warning("I'm logging")
         log.info("on multiple levels!")
 
-As we haven't specified a ``undead.log_handler`` the logfile will be created in ``~/.some_things_have_to_be_believed_to_be_seen``
+As we haven't specified a ``undead.log_handler`` the logfile will be created in ``~/.i_am_undead``
 
 Installation
 ------------

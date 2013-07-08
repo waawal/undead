@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 
 """
-Poltergeist
+Undead
 ===========
 
 Dead Easy UNIX Daemons!
 
 """
 
-class Geist(object):
-    """ This is the Poltergeist module """
+class Undead(object):
+    """ This is the Undead module """
 
 
     name = None
@@ -109,8 +109,8 @@ class Geist(object):
             finally:
                 sys.exit(0)
 
-geist = Geist()
+undead = Undead()
 import sys
-sys.modules[__name__] = geist
+sys.modules[__name__] = undead
 # Removing from module ns
 del sys

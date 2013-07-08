@@ -34,17 +34,17 @@ poltergeist.name
 poltergeist.pid
   Path to logfile.  
 
-  Default: /tmp/``poltergeist.name``.pid
+  Default: ~/.``poltergeist.name``/``poltergeist.name``.pid
 
 poltergeist.log_level
   Log level.  
 
   Default: "WARNING"
 
-poltergeist.file_descriptors
-  List of filedescriptors to hold open.
+poltergeist.log_handler
+  The logbook handler.
 
-  Default: ``[]``
+  Default: ``FileHandler`` ~/.``poltergeist.name``/``poltergeist.name``.log
 
 
 .. code:: python
@@ -54,6 +54,7 @@ poltergeist.file_descriptors
     poltergeist.name = "Tangina Barrons"
     poltergeist.pid = "~/tangina.pid"
     poltergeist.log_level = "ERROR"
+    poltergeist.log_handler = poltergeist.logbook.SyslogHandler('My Daemon', level='ERROR')
 
     @poltergeist
     def my_daemon_process():

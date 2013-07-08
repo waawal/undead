@@ -64,3 +64,8 @@ Dependencies
 ------------
 
 ``loggbook`` and ``daemonize``
+
+License
+-------
+
+MIT

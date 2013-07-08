@@ -7,7 +7,8 @@ Dead Easy UNIX Daemons!
    :alt: This house is clean.
 
 .. code:: python
-
+    
+    from __future__ import print_function
     import poltergeist
 
     @poltergeist

@@ -1,7 +1,7 @@
 undead
 ======
 
-Dead Easy POSIX Daemons, in Python!
+Dead Easy POSIX Daemons for Python!
 
 -------------------------------------------------------------------------
 

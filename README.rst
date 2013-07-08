@@ -47,6 +47,7 @@ poltergeist.file_descriptors
 
     poltergeist.name = "Tangina Barrons"
     poltergeist.pid = "~/tangina.pid"
+    poltergeist.log_level = "ERROR"
 
     @poltergeist
     def my_daemon_process():

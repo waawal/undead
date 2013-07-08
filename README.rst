@@ -1,10 +1,14 @@
 undead
 ===========
 
-.. image:: http://dribbble.s3.amazonaws.com/users/158965/screenshots/826605/mr_z.gif
+.. image:: http://i682.photobucket.com/albums/vv182/nmrihmod/EmergencyBroadcastBars.gif
    :alt: This house is clean.
 
+------------
+
 Dead Easy ``*NIX`` Daemons, in ``Python``!
+
+------------
 
 .. code:: python
 

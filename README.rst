@@ -17,6 +17,12 @@ Dead Easy UNIX Daemons!
         while True:
             sleep(10)
 
+Installation
+------------
+::
+
+    pip install poltergeist
+
 Settings
 --------
 
@@ -53,3 +59,6 @@ poltergeist.file_descriptors
     def my_daemon_process():
         """ This function will be daemonized. """
         # ...
+
+Dependencies
+------------

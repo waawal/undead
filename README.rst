@@ -14,10 +14,8 @@ Dead Easy UNIX Daemons!
     @poltergeist
     def my_daemon_process():
         """ This function will be daemonized. """
-        from __future__ import print_function
+
         from time import sleep
 
         while True:
-            print('I want pepperoni pizza!')
             sleep(10)
-

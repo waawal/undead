@@ -32,6 +32,11 @@ undead.pid
 
   Default: ``~/.{undead.name}/{undead.name}.pid``
 
+undead.working_dir
+  Path to working directory.  
+
+  Default: ``"/"``
+
 undead.log_level
   Log level.  
 

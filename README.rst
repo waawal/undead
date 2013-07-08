@@ -23,22 +23,22 @@ Settings
 poltergeist.name
   Name of the logger.
 
-  *Default: `__name__` of decorated.*
+  Default: `__name__` of decorated callable
 
 poltergeist.pid
   Path to logfile.  
 
-  *Default: /tmp/`poltergeist.name`.pid*
+  Default: /tmp/`poltergeist.name`.pid
 
 poltergeist.log_level
   Log level.  
 
-  *Default: "WARNING".*
+  Default: "WARNING"
 
 poltergeist.file_descriptors
-  List of filedescriptors to hold open.  
+  List of filedescriptors to hold open.
 
-  *Default: `[]`*
+  Default: `[]`
 
 
 .. code:: python

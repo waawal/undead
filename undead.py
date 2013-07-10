@@ -9,13 +9,17 @@ Dead Easy UNIX Daemons!
 
 """
 
+import daemon
+
 class Undead(object):
     """ This is the Undead module """
+    import logbook
 
 
     name = None
     pid = None
     working_dir = "/"
+    log = True
     log_level = "WARNING"
     log_handler = None
 
@@ -25,54 +29,12 @@ class Undead(object):
         self.start = self.start(action)
 
     def start(self, action):
-        """ Does the daemon dance """
-        import os
-        import sys
-        import signal
-        import resource
-        import atexit
-        import inspect
-        from resource import getrlimit, RLIMIT_NOFILE
-
         from lockfile import FileLock
-        from logbook import Logger, FileHandler
         
-        process_id = os.fork()
-        if process_id < 0:
-            sys.exit(1)
-        elif process_id is not 0:
-            sys.exit(0)
-        process_id = os.setsid()
-        if process_id is -1:
-            sys.exit(1)
-        devnull = "/dev/null"
-        if hasattr(os, "devnull"):
-            devnull = os.devnull
-
-        for fd in range(getrlimit(RLIMIT_NOFILE)[0]):
-            try:
-                os.close(fd)
-            except OSError:
-                pass
-
-        os.open(devnull, os.O_RDWR)
-        os.dup(0)
-        os.dup(0)
-
-        os.umask(0o27)
-        os.chdir(self.working_dir)
-
-        self.action = action
-        self.name = self.name or action.__name__
-
         home = os.path.join(os.path.expanduser("~"),
                                 ".{0}".format(self.name)
                                 )
-        if self.pid is None:
-            if not os.path.exists(home):
-                os.makedirs(home)
-            self.pid = os.path.join(home, "{0}.pid".format(self.name))
-
+        
         self.lock = FileLock(self.pid)
         if self.lock.is_locked():
             sys.stderr.write("Error: {0} is locked.\n".format(self.pid))
@@ -82,12 +44,12 @@ class Undead(object):
         self.lock.acquire()
         
         # Initialize logging.
-        self.log = Logger(self.name)
+        self.log = logger.Logger(self.name)
 
         if self.log_handler is None:
             if not os.path.exists(home):
                     os.makedirs(home)
-            self.log_handler = FileHandler(
+            self.log_handler = logbook.FileHandler(
                 os.path.join(home, "{0}.log".format(self.name)))
         self.log_handler.level_name = self.log_level
         with self.log_handler.applicationbound():
@@ -103,24 +65,10 @@ class Undead(object):
                 return self.action()
             self.action(log=self.log)
 
-    def _sigterm(self, signum=None, frame=None):
-        import os
-        import sys
-        with self.log_handler.applicationbound():
-            if not signum:
-                self.log.warning("Stopping daemon.")
-            else:
-                self.log.warning("Signal: {0} -Stopping daemon.".format(signum))
-            try:
-                self.lock.release()
-                os.remove(self.pid)
-            except OSError:
-                pass
-            finally:
-                sys.exit(0)
 
 undead = Undead()
 import sys
 sys.modules[__name__] = undead
 # Removing from module ns
 del sys
+

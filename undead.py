@@ -13,13 +13,29 @@ class Undead(object):
     """ This is the Undead module """
     import logbook
 
+    settings = {
+    'chroot_directory': None
+    'working_directory': u'/'
+    'umask': 0
+    'uid': None
+    'gid': None
+    'prevent_core': True
+    'detach_process': None
+    'files_preserve': None
+    'pidfile': None
+    'stdin': None
+    'stdout': None
+    'stderr': None
+    'signal_map': None
+    }
 
     name = None
-    pid = None
-    working_dir = "/"
     log_level = "WARNING"
     log_handler = None
 
+    #TODO: properties
+    working_dir = "/"
+    pid = None
 
     def __call__(self, action, *args, **kwargs):
         """ Alias for start """
@@ -43,8 +59,8 @@ class Undead(object):
         self.lock.acquire()
         
         # Initialize logging.
-        args = inspect.getargspec(self.action)[0]
-        if 'log' in args:
+        action_args = inspect.getargspec(self.action)[0]
+        if 'log' in action_args:
             self.log = logger.Logger(self.name) # Todo: add fh to open files
 
             if self.log_handler is None:
@@ -67,3 +83,36 @@ import sys
 sys.modules[__name__] = undead
 # Removing from module ns
 del sys
+
+
+
+import os
+import grp
+import signal
+import daemon
+import lockfile
+
+from spam import (
+    initial_program_setup,
+    do_main_program,
+    program_cleanup,
+    reload_program_config,
+    )
+
+
+
+context.signal_map = {
+    signal.SIGTERM: program_cleanup,
+    signal.SIGHUP: 'terminate',
+    signal.SIGUSR1: reload_program_config,
+    }
+
+mail_gid = grp.getgrnam('mail').gr_gid
+context.gid = mail_gid
+
+important_file = open('spam.data', 'w')
+interesting_file = open('eggs.data', 'w')
+context.files_preserve = [important_file, interesting_file]
+
+initial_program_setup()
+

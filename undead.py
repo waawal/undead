@@ -9,8 +9,6 @@ Dead Easy UNIX Daemons!
 
 """
 
-import daemon
-
 class Undead(object):
     """ This is the Undead module """
     import logbook
@@ -19,7 +17,6 @@ class Undead(object):
     name = None
     pid = None
     working_dir = "/"
-    log = True
     log_level = "WARNING"
     log_handler = None
 
@@ -29,12 +26,14 @@ class Undead(object):
         self.start = self.start(action)
 
     def start(self, action):
+        import daemon
         from lockfile import FileLock
+        context = daemon.DaemonContext()
         
-        home = os.path.join(os.path.expanduser("~"),
+        default_dir = os.path.join(os.path.expanduser("~"),
                                 ".{0}".format(self.name)
                                 )
-        
+
         self.lock = FileLock(self.pid)
         if self.lock.is_locked():
             sys.stderr.write("Error: {0} is locked.\n".format(self.pid))
@@ -44,26 +43,23 @@ class Undead(object):
         self.lock.acquire()
         
         # Initialize logging.
-        self.log = logger.Logger(self.name)
+        args = inspect.getargspec(self.action)[0]
+        if 'log' in args:
+            self.log = logger.Logger(self.name) # Todo: add fh to open files
 
-        if self.log_handler is None:
-            if not os.path.exists(home):
-                    os.makedirs(home)
+            if self.log_handler is None:
+            if not os.path.exists(default_dir):
+                    os.makedirs(default_dir)
             self.log_handler = logbook.FileHandler(
-                os.path.join(home, "{0}.log".format(self.name)))
-        self.log_handler.level_name = self.log_level
-        with self.log_handler.applicationbound():
-
-            # Set custom action on SIGTERM.
-            signal.signal(signal.SIGTERM, self._sigterm)
-            atexit.register(self._sigterm)
-
-            self.log.warning("Starting daemon.")
-
-            args = inspect.getargspec(self.action)[0]
-            if 'log' not in args:
-                return self.action()
-            self.action(log=self.log)
+                os.path.join(default_dir, "{0}.log".format(self.name)))
+            self.log_handler.level_name = self.log_level
+            with self.log_handler.applicationbound():
+                self.log.warning("Starting daemon.")
+                with context:
+                    self.action(log=self.log)
+        else:
+            with context:
+                self.action()
 
 
 undead = Undead()
@@ -71,4 +67,3 @@ import sys
 sys.modules[__name__] = undead
 # Removing from module ns
 del sys
-

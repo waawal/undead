@@ -29,16 +29,16 @@ Settings
 --------
 
 undead.name
-  Name of the logger.
+  Name of the logger and process.
 
   Default: ``__name__`` of decorated callable
 
-undead.pid
-  Path to logfile.  
+undead.pidfile
+  Path to pidfile.  
 
   Default: ``~/.{undead.name}/{undead.name}.pid``
 
-undead.working_dir
+undead.working_directory
   Path to working directory.  
 
   Default: ``"/"``
@@ -65,7 +65,6 @@ Example
     undead.pid = "/var/log/tangina.pid"
     undead.working_dir = "/var/www"
     undead.log_level = "ERROR"
-    undead.log_handler = SyslogHandler("My Daemon", level="ERROR")
 
     @undead
     def my_daemon_process():
@@ -86,7 +85,7 @@ Just add ``log`` to your decorated signature, and the logger will be passed down
         log.warning("I'm warning you!")
         log.info("Soap, 2 for $1.99")
 
-Since we didn't specify a ``undead.log_handler`` the logfile will be created by default in ``~/.i_am_undead``
+The logfile will be created by default in ``~/.i_am_undead``
 
 License
 -------

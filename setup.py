@@ -10,7 +10,7 @@ with open('README.rst') as file:
 
 setup(
     name='undead',
-    version='0.2.0',
+    version='0.2.2',
     url='https://github.com/waawal/undead',
     license='MIT',
     author='Daniel Waardal',

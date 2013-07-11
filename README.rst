@@ -56,8 +56,8 @@ Example
     import undead
     from logbook import SyslogHandler
 
-    undead.name = "Tangina Barrons"
-    undead.log_level = "ERROR"
+    undead.name = "my-first-daemon"
+    undead.process_name = "leDeamon"
 
     @undead
     def my_daemon_process():

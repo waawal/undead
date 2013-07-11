@@ -15,42 +15,44 @@ class Undead(object):
 
 
     def __init__(self):
-        settings = {
-        'chroot_directory': None
-        'working_directory': u'/'
-        'umask': 0
-        'uid': None
-        'gid': None
-        'prevent_core': True
-        'detach_process': None
-        'files_preserve': None
-        'pidfile': None
-        'stdin': None
-        'stdout': None
-        'stderr': None
-        'signal_map': None
-        }
 
+        class Settings(object):
+
+            def __init__(self):
+                self.chroot_directory = None
+                self.working_directory = u'/'
+                self.umask = 0
+                self.uid = None
+                self.gid = None
+                self.prevent_core = True
+                self.detach_process = None
+                self.files_preserve = None
+                self.pidfile = None
+                self.stdin = None
+                self.stdout = None
+                self.stderr = None
+                self.signal_map = None
+
+        self.settings = Settings()
         name = None
         log_level = "WARNING"
         log_handler = None # Check for basestring
 
-    #TODO: properties
     @property
     def working_dir(self):
-        return settings['working_directory']
+        return self.settings.working_directory
 
     @working_dir.setter
     def my_attr(self, value):
-        settings['working_directory'] = value
+        self.settings.working_directory = value
 
     @property
     def pid(self):
-        return settings['pidfile']
+        return self.settings.pidfile
 
     @pid.setter
     def my_attr(self, value):
-        settings['pidfile'] = value
+        self.settings.pidfile = value
 
     def __call__(self, action, *args, **kwargs):
         """ Alias for start """
@@ -72,7 +74,7 @@ class Undead(object):
             lockfile.write("{0}".format(os.getpid()))
         self.lock.acquire()
         # Initializing daemon.
-        context = daemon.DaemonContext(**self.settings)
+        context = daemon.DaemonContext(**self.settings.__dict__)
         # Initialize logging.
         action_args = inspect.getargspec(self.action)[0]
         if 'log' in action_args:

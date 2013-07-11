@@ -60,17 +60,15 @@ class Undead(object):
     def start(self, action):
         import daemon
         from lockfile import FileLock
-        
+
+        self.name = self.name or action.__name__
         default_dir = os.path.join(os.path.expanduser("~"),
                                 ".{0}".format(self.name))
+        if self.settings.pidfile is None:
+            if not os.path.exists(default_dir):
+                os.makedirs(default_dir)
+            self.settings.pidfile = os.path.join(default_dir, "{0}.pid".format(self.name))
 
-        self.lock = FileLock(self.pid) # TODO: Check if pid is not None
-        if self.lock.is_locked():
-            sys.stderr.write("Error: {0} is locked.\n".format(self.pid))
-            sys.exit(0)
-        with open(self.pid, "w") as lockfile:
-            lockfile.write("{0}".format(os.getpid()))
-        self.lock.acquire()
         # Initializing daemon.
         context = daemon.DaemonContext(**self.settings.__dict__)
         # Initialize logging if requested.

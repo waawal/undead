@@ -14,7 +14,7 @@ class Undead(object):
 
 
     def __init__(self, name=None, log_level='WARNING',
-                 log_handler=None, **kwargs):
+                 log_handler=None, proc_title = None, **kwargs):
 
         self.settings = {
             'chroot_directory': None,
@@ -84,6 +84,7 @@ class Undead(object):
         import daemon
         import lockfile
         import logbook
+        from setproctitle import setproctitle
 
         self.name = self.name or action.__name__
         default_dir = os.path.join(os.path.expanduser("~"),
@@ -93,8 +94,12 @@ class Undead(object):
             if not os.path.exists(default_dir):
                 os.makedirs(default_dir)
         if isinstance(self.settings['pidfile'], basestring):
+            pid = str(os.getpid())
+            with open(self.settings['pidfile'], 'w') as pidfile:
+                pidfile.write(pid)
             self.settings['pidfile'] = lockfile.FileLock(self.settings['pidfile'])
-
+        if isinstance(self.proctitle, basestring):
+            setproctitle(self.proctitle)
         # Initialize logging if requested.
         action_args = inspect.getargspec(action)[0]
         if 'log' in action_args:

@@ -54,7 +54,6 @@ Example
 .. code:: python
 
     import undead
-    from logbook import SyslogHandler
 
     undead.name = "my-first-daemon"
     undead.process_name = "leDeamon"

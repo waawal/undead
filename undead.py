@@ -34,8 +34,21 @@ class Undead(object):
     log_handler = None # Check for basestring
 
     #TODO: properties
-    working_dir = "/"
-    pid = None
+    @property
+    def working_dir(self):
+        return settings['working_directory']
+
+    @working_dir.setter
+    def my_attr(self, value):
+        settings['working_directory'] = value
+
+    @property
+    def pid(self):
+        return settings['pidfile']
+
+    @pid.setter
+    def my_attr(self, value):
+        settings['pidfile'] = value
 
     def __call__(self, action, *args, **kwargs):
         """ Alias for start """

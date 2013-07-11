@@ -98,8 +98,8 @@ class Undead(object):
             with open(self.settings['pidfile'], 'w') as pidfile:
                 pidfile.write(pid)
             self.settings['pidfile'] = lockfile.FileLock(self.settings['pidfile'])
-        if isinstance(self.proctitle, basestring):
-            setproctitle(self.proctitle)
+        if isinstance(self.proc_title, basestring):
+            setproctitle(self.proc_title)
         # Initialize logging if requested.
         action_args = inspect.getargspec(action)[0]
         if 'log' in action_args:

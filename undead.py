@@ -35,7 +35,7 @@ class Undead(object):
 
         self.settings = Settings()
         name = None
-        log_level = "WARNING"
+        log_level = "WARNING" # make a property, accept strings and numbers
         log_handler = None # Check for basestring
 
     @property
@@ -63,10 +63,9 @@ class Undead(object):
         from lockfile import FileLock
         
         default_dir = os.path.join(os.path.expanduser("~"),
-                                ".{0}".format(self.name)
-                                )
+                                ".{0}".format(self.name))
 
-        self.lock = FileLock(self.pid)
+        self.lock = FileLock(self.pid) # TODO: Check if pid is not None
         if self.lock.is_locked():
             sys.stderr.write("Error: {0} is locked.\n".format(self.pid))
             sys.exit(0)
@@ -75,7 +74,7 @@ class Undead(object):
         self.lock.acquire()
         # Initializing daemon.
         context = daemon.DaemonContext(**self.settings.__dict__)
-        # Initialize logging.
+        # Initialize logging if requested.
         action_args = inspect.getargspec(self.action)[0]
         if 'log' in action_args:
             self.log = logger.Logger(self.name) # Todo: add fh to open files

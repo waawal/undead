@@ -74,13 +74,18 @@ class Undead(object):
         # Initialize logging if requested.
         action_args = inspect.getargspec(self.action)[0]
         if 'log' in action_args:
-            self.log = logger.Logger(self.name) # Todo: add fh to open files
+            self.log = logger.Logger(self.name)
 
             if self.log_handler is None:
             if not os.path.exists(default_dir):
                     os.makedirs(default_dir)
             self.log_handler = logbook.FileHandler(
                 os.path.join(default_dir, "{0}.log".format(self.name)))
+            if self.settings.files_preserve is None:
+                self.settings.files_preserve = [self.log_handler.stream]
+            else:
+                self.settings.files_preserve.append(self.log_handler.stream)
+            self.settings.
             self.log_handler.level_name = self.log_level
             with self.log_handler.applicationbound():
                 self.log.warning("Starting daemon.")

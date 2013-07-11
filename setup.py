@@ -10,7 +10,7 @@ with open('README.rst') as file:
 
 setup(
     name='undead',
-    version='0.1.1',
+    version='0.2.0',
     url='https://github.com/waawal/undead',
     license='MIT',
     author='Daniel Waardal',
@@ -19,7 +19,7 @@ setup(
     long_description=long_description,
     py_modules=['undead'],
     zip_safe=True,
-    install_requires=['logbook','python-daemon',],
+    install_requires=['logbook','python-daemon','lockfile',],
     classifiers=[
         # As from http://pypi.python.org/pypi?%3Aaction=list_classifiers
         #'Development Status :: 1 - Planning',

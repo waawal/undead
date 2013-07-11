@@ -14,7 +14,7 @@ class Undead(object):
 
 
     def __init__(self, name=None, log_level='WARNING',
-                 log_handler=None, proc_title = None, **kwargs):
+                 log_handler=None, proc_title=None, **kwargs):
 
         self.settings = {
             'chroot_directory': None,
@@ -36,6 +36,7 @@ class Undead(object):
         self.name = name
         self.log_level = log_level
         self.log_handler = log_handler
+        self.proc_title = proc_title
 
 
         def __getattr__(self, name):

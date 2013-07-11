@@ -48,10 +48,10 @@ undead.log_level
 
   Default: ``"WARNING"``
 
-undead.log_handler
-  The logbook handler.
+undead.process_name
+  The name of the process (that shows up in ps etc.)
 
-  Default: ``~/.{undead.name}/{undead.name}.log``
+  Default: None (No manipulation of process name)
 
 Example
 *******

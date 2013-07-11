@@ -15,9 +15,11 @@ class Undead(object):
 
 
     def __init__(self):
+        self.name = None
+        self.log_level = "WARNING" # make a property, accept strings and numbers
+        self.log_handler = None # Check for basestring
 
         class Settings(object):
-
             def __init__(self):
                 self.chroot_directory = None
                 self.working_directory = u'/'
@@ -34,9 +36,6 @@ class Undead(object):
                 self.signal_map = None
 
         self.settings = Settings()
-        name = None
-        log_level = "WARNING" # make a property, accept strings and numbers
-        log_handler = None # Check for basestring
 
     @property
     def working_dir(self):

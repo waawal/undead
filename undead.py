@@ -91,7 +91,8 @@ class Undead(object):
         default_dir = os.path.join(os.path.expanduser("~"),
                                 ".{0}".format(self.name))
         if self.settings['pidfile'] is None:
-            self.settings['pidfile'] = os.path.join(default_dir, "{0}.pid".format(self.name))
+            self.settings['pidfile'] = os.path.join(default_dir,
+                                    "{0}.pid".format(self.name))
             if not os.path.exists(default_dir):
                 os.makedirs(default_dir)
         if isinstance(self.settings['pidfile'], basestring):

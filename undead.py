@@ -11,9 +11,7 @@ Dead Easy UNIX Daemons!
 
 class Undead(object):
     """ This is the Undead module """
-    
 
-    
 
     def __init__(self, name=None, log_level='WARNING',
                  log_handler=None, **kwargs):
@@ -72,14 +70,13 @@ class Undead(object):
 
     def __call__(self, action, *args, **kwargs):
         """ Alias for start """
-        self.start = self.start(action)
+        return self.start(action)
 
     def start(self, action):
         import os
         import inspect
         import daemon
         import logbook
-        from lockfile import FileLock
 
         self.name = self.name or action.__name__
         default_dir = os.path.join(os.path.expanduser("~"),
@@ -90,7 +87,7 @@ class Undead(object):
             self.settings['pidfile'] = os.path.join(default_dir, "{0}.pid".format(self.name))
 
         # Initializing daemon.
-        context = daemon.DaemonContext(**self.settings)
+        self.daemon = daemon.DaemonContext(**self.settings)
         # Initialize logging if requested.
         action_args = inspect.getargspec(action)[0]
         if 'log' in action_args:
@@ -101,17 +98,17 @@ class Undead(object):
                     os.makedirs(default_dir)
                 self.log_handler = logbook.FileHandler(
                     os.path.join(default_dir, "{0}.log".format(self.name)))
-                if self.settings['files_preserve'] is None:
-                    self.settings['files_preserve'] = [self.log_handler.stream]
+                if self.daemon.files_preserve is None:
+                    self.daemon.files_preserve = [self.log_handler.stream]
                 else:
-                    self.settings['files_preserve'].append(self.log_handler.stream)
+                    self.daemon.files_preserve.append(self.log_handler.stream)
             self.log_handler.level_name = self.log_level
             with self.log_handler.applicationbound():
                 self.log.warning("Starting daemon.")
-                with context:
+                with self.daemon:
                     action(log=self.log)
         else:
-            with context:
+            with self.daemon:
                 action()
 
 

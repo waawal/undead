@@ -88,13 +88,6 @@ Installation
 
     pip install undead
 
-Dependencies
-------------
-
-``logbook``
-
-``lockfile``
-
 License
 -------
 

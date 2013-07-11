@@ -85,7 +85,6 @@ class Undead(object):
                 self.settings.files_preserve = [self.log_handler.stream]
             else:
                 self.settings.files_preserve.append(self.log_handler.stream)
-            self.settings.
             self.log_handler.level_name = self.log_level
             with self.log_handler.applicationbound():
                 self.log.warning("Starting daemon.")

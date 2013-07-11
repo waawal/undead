@@ -13,25 +13,27 @@ class Undead(object):
     """ This is the Undead module """
     import logbook
 
-    settings = {
-    'chroot_directory': None
-    'working_directory': u'/'
-    'umask': 0
-    'uid': None
-    'gid': None
-    'prevent_core': True
-    'detach_process': None
-    'files_preserve': None
-    'pidfile': None
-    'stdin': None
-    'stdout': None
-    'stderr': None
-    'signal_map': None
-    }
 
-    name = None
-    log_level = "WARNING"
-    log_handler = None # Check for basestring
+    def __init__(self):
+        settings = {
+        'chroot_directory': None
+        'working_directory': u'/'
+        'umask': 0
+        'uid': None
+        'gid': None
+        'prevent_core': True
+        'detach_process': None
+        'files_preserve': None
+        'pidfile': None
+        'stdin': None
+        'stdout': None
+        'stderr': None
+        'signal_map': None
+        }
+
+        name = None
+        log_level = "WARNING"
+        log_handler = None # Check for basestring
 
     #TODO: properties
     @property

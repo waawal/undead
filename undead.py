@@ -54,6 +54,9 @@ class Undead(object):
 
     @property
     def working_dir(self):
+        import warnings
+        warnings.warn("Deprecated, please use working_directory instead.",
+            DeprecationWarning, stacklevel=2)
         return self.settings['working_directory']
 
     @working_dir.setter
@@ -66,6 +69,9 @@ class Undead(object):
 
     @pid.setter
     def pid(self, value):
+        import warnings
+        warnings.warn("Deprecated, please use pidfile instead.",
+            DeprecationWarning, stacklevel=2)
         self.settings['pidfile'] = value
 
     def __call__(self, action, *args, **kwargs):

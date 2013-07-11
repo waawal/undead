@@ -63,7 +63,7 @@ Example
 
     undead.name = "Tangina Barrons"
     undead.pid = "/var/log/tangina.pid"
-    undead.working_dir = "/var/www"
+    undead.working_directory = "/var/www"
     undead.log_level = "ERROR"
 
     @undead

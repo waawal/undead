@@ -13,111 +13,107 @@ class Undead(object):
     """ This is the Undead module """
 
 
-    name = None
-    pid = None
-    working_dir = "/"
-    log_level = "WARNING"
-    log_handler = None
+    def __init__(self, name=None, log_level='WARNING',
+                 log_handler=None, **kwargs):
 
+        self.settings = {
+            'chroot_directory': None,
+            'working_directory': u'/',
+            'umask': 0,
+            'uid': None,
+            'gid': None,
+            'prevent_core': True,
+            'detach_process': None,
+            'files_preserve': None,
+            'pidfile': None,
+            'stdin': None,
+            'stdout': None,
+            'stderr': None,
+            'signal_map': None,
+        }
+        self.settings.update(kwargs)
+
+        self.name = name
+        self.log_level = log_level
+        self.log_handler = log_handler
+
+
+        def __getattr__(self, name):
+            if name in self.settings:
+                return self.settings[name]
+            else:
+                raise AttributeError
+        self.__getattr__ = __getattr__
+
+        def __setattr__(self, name, value):
+            if name in self.settings:
+                self.settings[name] = value
+            else:
+                self.__dict__[name] = value
+        self.__setattr__ = __setattr__
+
+    @property
+    def working_dir(self):
+        return self.settings['working_directory']
+
+    @working_dir.setter
+    def working(self, value):
+        self.settings['working_directory'] = value
+
+    @property
+    def pid(self):
+        return self.settings['pidfile']
+
+    @pid.setter
+    def pid(self, value):
+        self.settings['pidfile'] = value
 
     def __call__(self, action, *args, **kwargs):
         """ Alias for start """
-        self.start = self.start(action)
+        return self.start(action)
 
     def start(self, action):
-        """ Does the daemon dance """
         import os
-        import sys
-        import signal
-        import resource
-        import atexit
         import inspect
-        from resource import getrlimit, RLIMIT_NOFILE
+        import daemon
+        import lockfile
+        import logbook
 
-        from lockfile import FileLock
-        from logbook import Logger, FileHandler
-        
-        process_id = os.fork()
-        if process_id < 0:
-            sys.exit(1)
-        elif process_id is not 0:
-            sys.exit(0)
-        process_id = os.setsid()
-        if process_id is -1:
-            sys.exit(1)
-        devnull = "/dev/null"
-        if hasattr(os, "devnull"):
-            devnull = os.devnull
-
-        for fd in range(getrlimit(RLIMIT_NOFILE)[0]):
-            try:
-                os.close(fd)
-            except OSError:
-                pass
-
-        os.open(devnull, os.O_RDWR)
-        os.dup(0)
-        os.dup(0)
-
-        os.umask(0o27)
-        os.chdir(self.working_dir)
-
-        self.action = action
         self.name = self.name or action.__name__
+        default_dir = os.path.join(os.path.expanduser("~"),
+                                ".{0}".format(self.name))
+        if self.settings['pidfile'] is None:
+            self.settings['pidfile'] = os.path.join(default_dir, "{0}.pid".format(self.name))
+            if not os.path.exists(default_dir):
+                os.makedirs(default_dir)
+        if isinstance(self.settings['pidfile'], basestring):
+            self.settings['pidfile'] = lockfile.FileLock(self.settings['pidfile'])
 
-        home = os.path.join(os.path.expanduser("~"),
-                                ".{0}".format(self.name)
-                                )
-        if self.pid is None:
-            if not os.path.exists(home):
-                os.makedirs(home)
-            self.pid = os.path.join(home, "{0}.pid".format(self.name))
+        print self.settings['pidfile'].__dict__
 
-        self.lock = FileLock(self.pid)
-        if self.lock.is_locked():
-            sys.stderr.write("Error: {0} is locked.\n".format(self.pid))
-            sys.exit(0)
-        with open(self.pid, "w") as lockfile:
-            lockfile.write("{0}".format(os.getpid()))
-        self.lock.acquire()
-        
-        # Initialize logging.
-        self.log = Logger(self.name)
+        # Initialize logging if requested.
+        action_args = inspect.getargspec(action)[0]
+        if 'log' in action_args:
+            self.log = logbook.Logger(self.name)
 
-        if self.log_handler is None:
-            if not os.path.exists(home):
-                    os.makedirs(home)
-            self.log_handler = FileHandler(
-                os.path.join(home, "{0}.log".format(self.name)))
-        self.log_handler.level_name = self.log_level
-        with self.log_handler.applicationbound():
+            if self.log_handler is None:
+                if not os.path.exists(default_dir):
+                    os.makedirs(default_dir)
+                self.log_handler = logbook.FileHandler(
+                    os.path.join(default_dir, "{0}.log".format(self.name)))
+                if self.settings['files_preserve'] is None:
+                    self.settings['files_preserve'] = [self.log_handler.stream]
+                else:
+                    self.settings['files_preserve'].append(self.log_handler.stream)
+            self.log_handler.level_name = self.log_level
+            with self.log_handler.applicationbound():
+                self.log.warning("Starting daemon.")
+                with daemon.DaemonContext(**self.settings):
+                    action(log=self.log)
+        else:
+            with daemon.DaemonContext(**self.settings):
+                action()
 
-            # Set custom action on SIGTERM.
-            signal.signal(signal.SIGTERM, self._sigterm)
-            atexit.register(self._sigterm)
-
-            self.log.warning("Starting daemon.")
-
-            args = inspect.getargspec(self.action)[0]
-            if 'log' not in args:
-                return self.action()
-            self.action(log=self.log)
-
-    def _sigterm(self, signum=None, frame=None):
-        import os
-        import sys
-        with self.log_handler.applicationbound():
-            if not signum:
-                self.log.warning("Stopping daemon.")
-            else:
-                self.log.warning("Signal: {0} -Stopping daemon.".format(signum))
-            try:
-                self.lock.release()
-                os.remove(self.pid)
-            except OSError:
-                pass
-            finally:
-                sys.exit(0)
 
 undead = Undead()
 import sys

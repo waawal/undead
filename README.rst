@@ -19,6 +19,12 @@ Dead Easy POSIX Daemons for Python!
 
 -------------------------------------------------------------------------
 
+Installation
+------------
+::
+
+    pip install undead
+
 Settings
 --------
 
@@ -81,19 +87,6 @@ Just add ``log`` to your decorated signature, and the logger will be passed down
         log.info("Soap, 2 for $1.99")
 
 Since we didn't specify a ``undead.log_handler`` the logfile will be created by default in ``~/.i_am_undead``
-
-Installation
-------------
-::
-
-    pip install undead
-
-Dependencies
-------------
-
-``logbook``
-
-``lockfile``
 
 License
 -------

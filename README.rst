@@ -31,7 +31,7 @@ Settings
 undead.name
   Name of the logger and process.
 
-  Default: ``__name__`` of decorated callable
+  Default: The ``__name__`` attribute of your decorated callable
 
 undead.pidfile
   Path to pidfile.  
@@ -46,7 +46,7 @@ undead.log_level
 undead.process_name
   The name of the process (that shows up in ps etc.)
 
-  Default: None (No manipulation of process name)
+  Default: None (No manipulation of process name).
 
 Example
 *******
@@ -66,7 +66,7 @@ Example
 Logging within the decorated handler
 ------------------------------------
 
-Just add ``log`` to your decorated signature, and the logger will be passed down. Log away captain!
+Just add ``log`` to your decorateds positional arguments and a logger will be passed down. Log away captain!
 
 .. code:: python
 
